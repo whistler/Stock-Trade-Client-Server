@@ -1,6 +1,8 @@
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.ExportException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
@@ -45,8 +47,20 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi {
 		
 		try{
 			//Registry registry = java.rmi.registry.LocateRegistry.createRegistry(PORT);
+			//registry = LocateRegistry.getRegistry();
+			try{
 			registry = LocateRegistry.createRegistry(PORT);
-			registry.bind(REGISTRYNAME, new TradeServer());
+			} catch (ExportException ex) {
+				registry = LocateRegistry.getRegistry();
+			}
+			try{
+				registry.lookup(REGISTRYNAME);
+				registry.unbind(REGISTRYNAME);
+				registry.bind(REGISTRYNAME, new TradeServer());
+			} catch (NotBoundException ex)
+			{
+				registry.bind(REGISTRYNAME, new TradeServer());
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -54,7 +68,7 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi {
 	
 	public float query(String ticker_name) throws RemoteException
 	{
-		return 0;
+		return 140;
 	}
 
 	public String buy(String ticker_name, int num_stocks) throws RemoteException

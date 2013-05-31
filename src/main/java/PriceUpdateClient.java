@@ -1,3 +1,6 @@
+import java.rmi.Naming;
+import java.rmi.RMISecurityManager;
+
 
 public class PriceUpdateClient {
 
@@ -5,8 +8,12 @@ public class PriceUpdateClient {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		try {
+			System.setSecurityManager(new RMISecurityManager());
+			TradeServer server = (TradeServer) Naming.lookup("rmi://localhost/myserver");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 }
