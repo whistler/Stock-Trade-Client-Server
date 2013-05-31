@@ -1,6 +1,8 @@
-
 public class TradeClient {
 
+	private String clientname ;
+   	private static String host = "localhost";
+    	private static int portnumber = 51234;
 	/**
 	 * @param args
 	 */
