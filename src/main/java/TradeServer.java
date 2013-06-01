@@ -7,6 +7,8 @@ import java.rmi.registry.Registry;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import api.PriceUpdateApi;
 import api.TradeApi;
@@ -46,6 +48,8 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceU
 		user.setBalance(1000);
 		user.setUsername("Ibrahim");
 		userDao.createIfNotExists(user);
+
+		StockUpdater.updateStockPrices("AAPL,GOOG,T,GE");
 		
 		try{
 			findOrCreateRegistry();
