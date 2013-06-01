@@ -25,7 +25,7 @@ public class TradeClient {
 		
 		try {
 			TradeApi server = (TradeApi) Naming.lookup(SERVERPATH);
-			System.out.println(server.query("Foo"));
+			System.out.println(server.query("FOO"));
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

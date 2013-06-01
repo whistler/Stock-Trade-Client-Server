@@ -33,4 +33,12 @@ public class Stock {
 	public void setShares(int shares) {
 		this.shares = shares;
 	}
+	
+	public String print()
+	{
+		if (getPrice()>0)
+			return getSymbol() + " " + getPrice();
+		else
+			return "Stock " + getSymbol() + " does not exist";
+	}
 }

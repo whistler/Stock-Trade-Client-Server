@@ -42,16 +42,16 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceU
 		
 		createDataAccessObjects();
 
-		StockUpdater stockUpdater = new StockUpdater();
-		Thread stockUpdaterThread = new Thread(stockUpdater);
-		stockUpdaterThread.run();
-		
 		try{
 			findOrCreateRegistry();
 			bindRegistry();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+		
+		StockUpdater stockUpdater = new StockUpdater();
+		Thread stockUpdaterThread = new Thread(stockUpdater);
+		stockUpdaterThread.run();
 	}
 	
 	private static void createDataAccessObjects() throws SQLException
@@ -87,13 +87,21 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceU
 	
 	public String query(String ticker_name) throws RemoteException
 	{
+		ticker_name = ticker_name.toUpperCase();
 		try {
 			Stock stock = stockDao.queryForId(ticker_name);
-			//return "SUCCESS: " + stock.getPrice();
-			return "SUCCESS";
+			if (stock != null)
+			{
+				return stock.print();
+			}
+			else {
+				StockUpdater.updateStockPrices(ticker_name);
+				stock = stockDao.queryForId(ticker_name);
+				return stock.print();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return "ERROR: Stock price not found";
+			return "ERROR: There was a problem trying to find the stock price";
 		}
 	}
 
