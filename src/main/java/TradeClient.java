@@ -8,10 +8,7 @@ import api.TradeApi;
 
 public class TradeClient {
 
-<<<<<<< HEAD
 	private static String clientname ;
-=======
->>>>>>> 2e3249a6028734662298f27e7cfc68afd62f0d06
    	private static final String REGISTRYHOST = "localhost";
     private static int REGISTRYPORT = 1099;
     private static final String SERVERPATH = "rmi://localhost/tradeserver";
@@ -20,7 +17,6 @@ public class TradeClient {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-<<<<<<< HEAD
 		
 		System.out.println("TRADE CLIENT");
 		System.out.println("Please enter your username:");
@@ -32,8 +28,6 @@ public class TradeClient {
 
 		printOptions();
 		
-=======
->>>>>>> 2e3249a6028734662298f27e7cfc68afd62f0d06
 		try {
 			//Registry registry = LocateRegistry.getRegistry(REGISTRYHOST, REGISTRYPORT);
 			TradeApi server = (TradeApi) Naming.lookup(SERVERPATH);
