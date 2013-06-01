@@ -1,5 +1,6 @@
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import api.TradeApi;
@@ -16,7 +17,7 @@ public class TradeClient {
 		try {
 			server = (TradeApi) Naming.lookup(SERVERPATH);
 		} catch (Exception ex) {
-			System.err.println(" Server Error. " + ex.getMessage());
+			System.err.println("Server Error.\n" + ex.getMessage());
 			System.exit(0);
 		}
 
@@ -33,7 +34,7 @@ public class TradeClient {
 			printOptions();
 
 			String inputString = sc.next().toLowerCase().trim();
-			
+
 			if (!sc.nextLine().trim().equals("")) {
 				System.out.println("Incorrect Command Format.");
 				continue;
@@ -72,33 +73,48 @@ public class TradeClient {
 
 	private static void sellProcess() {
 		try {
-			System.out.println("sell");
-			System.out.println(server.sell("Foo", 5, clientname));
+			System.out.println("<Stock Symbol> <Quantity> ");
+			String stockSymbol = sc.next();
+			int quantity = sc.nextInt();
+			System.out.println(server.sell(stockSymbol, quantity, clientname));
 		} catch (RemoteException re) {
 			System.err.println("Server returned error. " + re.getMessage());
+		} catch (InputMismatchException ime) {
+			System.err.println("Input mismatch. " + ime.getMessage());
+		} catch (Exception otherException) {
+			System.out.println("Could not process request"
+					+ otherException.getMessage());
 		}
 	}
 
 	private static void buyProcess() {
 		try {
-			System.out.println("buy");
-			System.out.println(server.buy("Foo", 5, clientname));
+			System.out.println("<Stock Symbol> <Quantity> ");
+			String stockSymbol = sc.next();
+			int quantity = sc.nextInt();
+			System.out.println(server.buy(stockSymbol, quantity, clientname));
 		} catch (RemoteException re) {
 			System.err.println("Server returned error. " + re.getMessage());
+		} catch (InputMismatchException ime) {
+			System.err.println("Input mismatch. " + ime.getMessage());
+		} catch (Exception otherException) {
+			System.out.println("Could not process request"
+					+ otherException.getMessage());
 		}
 	}
 
 	private static void queryProcess() {
 		try {
-			System.out.println("query");
-			System.out.println(server.query("Foo"));
+			System.out.println("<Stock Symbol>");
+			String stockSymbol = sc.next();
+			System.out.println(server.query(stockSymbol));
 		} catch (RemoteException re) {
 			System.err.println("Server returned error. " + re.getMessage());
 		}
 	}
 
-
 	private static void printOptions() {
+		System.out.println();
 		System.out
 		.println("----------------------------------------------------------------");
 		System.out.println("| Available options: ");
@@ -112,10 +128,14 @@ public class TradeClient {
 
 	private static void getUsernameEntry() {
 		clientname = sc.next().toLowerCase().trim();
-		try {
-			System.out.println(server.identify(clientname));
-		} catch (RemoteException re) {
-			System.err.println("Server returned error. " + re.getMessage());
+		if (!sc.nextLine().trim().equals("")) {
+			System.out.println("Please enter single word username.");
+		} else {
+			try {
+				System.out.println(server.identify(clientname));
+			} catch (RemoteException re) {
+				System.err.println("Server returned error. " + re.getMessage());
+			}
 		}
 	}
 }

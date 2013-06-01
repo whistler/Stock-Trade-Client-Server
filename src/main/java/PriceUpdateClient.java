@@ -4,9 +4,7 @@ import java.rmi.RMISecurityManager;
 
 public class PriceUpdateClient {
 
-	/**
-	 * @param args
-	 */
+
 	public static void main(String[] args) {
 		try {
 			System.setSecurityManager(new RMISecurityManager());
