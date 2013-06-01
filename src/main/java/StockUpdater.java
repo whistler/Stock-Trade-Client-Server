@@ -1,6 +1,5 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.lang.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.SQLException;
@@ -10,7 +9,7 @@ public class StockUpdater implements Runnable{
 	public void run()
 	{
 		try {
-			
+			updateStockPrices();
 			Thread.sleep(2*60*1000);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -21,6 +20,17 @@ public class StockUpdater implements Runnable{
 	{
 		String stockList = getStockList();
 		String stockPriceList = downloadStocks(stockList);
+		String lines[] = stockPriceList.split("\n");
+		for(int i=0;i<lines.length;i++)
+		{
+			updateStockPrice(lines[i]);
+		}
+	}
+	
+	private static void updateStockPrice(String csvLine)
+	{
+		//String matches[] = csvLine.matches("\"(.*)\",(.*)");
+		System.out.println(csvLine);
 	}
 	
 	private static String getStockList() throws SQLException

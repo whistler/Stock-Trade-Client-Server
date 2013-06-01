@@ -90,7 +90,8 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceU
 	{
 		try {
 			Stock stock = stockDao.queryForId(ticker_name);
-			return "SUCCESS: " + stock.getPrice();
+			//return "SUCCESS: " + stock.getPrice();
+			return "SUCCESS";
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return "ERROR: Stock price not found";
