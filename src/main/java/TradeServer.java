@@ -5,8 +5,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.ExportException;
-import java.rmi.server.RMIClientSocketFactory;
-import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 
@@ -20,6 +18,10 @@ import com.j256.ormlite.support.ConnectionSource;
 
 
 public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceUpdateApi {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final int PORT = 1099;
 	private static final String REGISTRYNAME = "tradeserver";
 	private static final String DATASOURCE = "jdbc:sqlite:stock_trade.db";

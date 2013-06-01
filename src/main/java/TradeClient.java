@@ -1,7 +1,4 @@
 import java.rmi.Naming;
-import java.rmi.RMISecurityManager;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.Scanner;
 
 import api.TradeApi;
@@ -9,8 +6,6 @@ import api.TradeApi;
 public class TradeClient {
 
 	private static String clientname ;
-   	private static final String REGISTRYHOST = "localhost";
-    private static int REGISTRYPORT = 1099;
     private static final String SERVERPATH = "rmi://localhost/tradeserver";
     private static Scanner sc;
 	/**
@@ -29,7 +24,6 @@ public class TradeClient {
 		printOptions();
 		
 		try {
-			//Registry registry = LocateRegistry.getRegistry(REGISTRYHOST, REGISTRYPORT);
 			TradeApi server = (TradeApi) Naming.lookup(SERVERPATH);
 			System.out.println(server.query("Foo"));
 		} catch (Exception ex) {
@@ -55,5 +49,4 @@ public class TradeClient {
 			System.out.println(clientname);
 		}
 	}
-
 }
