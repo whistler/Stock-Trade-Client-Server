@@ -67,6 +67,8 @@ public class TradeClient {
 				break;
 			}
 		}
+
+		System.out.println("Logged out");
 		sc.close();
 		System.exit(0);
 	}
