@@ -7,8 +7,6 @@ import java.rmi.registry.Registry;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import api.PriceUpdateApi;
 import api.TradeApi;
@@ -43,13 +41,10 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceU
 	public static void main(String[] args) throws SQLException {
 		
 		createDataAccessObjects();
-		
-		User user = new User();
-		user.setBalance(1000);
-		user.setUsername("Ibrahim");
-		userDao.createIfNotExists(user);
 
-		StockUpdater.updateStockPrices("AAPL,GOOG,T,GE");
+		StockUpdater stockUpdater = new StockUpdater();
+		Thread stockUpdaterThread = new Thread(stockUpdater);
+		stockUpdaterThread.run();
 		
 		try{
 			findOrCreateRegistry();
@@ -117,7 +112,17 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceU
 		return "SUCCESS";
 	}
 
-	public String indentify(String user) throws RemoteException {
-		return "SUCCESS: " + user + " logged in";
+	public String indentify(String username) throws RemoteException {
+		User user = new User();
+		user.setBalance(1000);
+		user.setUsername(username);
+		try {
+			userDao.createIfNotExists(user);
+			return "SUCCESS: " + username + " logged in";
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "ERROR: Could not identify";
+		}
+		
 	}
 }

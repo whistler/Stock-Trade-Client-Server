@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 /* Updates stock prices every two minutes */
 public class StockUpdater implements Runnable{
 	private static final int INITIALSHARES = 1000;
+	
 	public void run()
 	{
 		try {
@@ -33,6 +34,7 @@ public class StockUpdater implements Runnable{
 		{
 			updateStockPrice(lines[i]);
 		}
+		System.out.println("Stock prices updated for: " + stockList);
 	}
 	
 	public static void updateStockPrice(String csvLine) throws SQLException
