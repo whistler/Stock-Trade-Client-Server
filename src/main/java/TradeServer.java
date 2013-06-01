@@ -105,9 +105,21 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceU
 		}
 	}
 
-	public String buy(String ticker_name, int num_stocks, String user) throws RemoteException
+	public String buy(String tickerName, int numStocks, String username) throws RemoteException
 	{
-		return "SUCCESS";
+		try {
+			Stock stock = stockDao.queryForId(tickerName);
+			if(stock==null) return "ERROR: " + tickerName + " does not exist in database, try to query for it first";
+			User user = userDao.queryForId(username);
+			if(user==null) return "ERROR: user " + username + " was not found";
+			if(numStocks>=stock.getShares()) return "The maximum shares available for buying are " + stock.getShares();
+			float cost = numStocks * stock.getPrice();
+			if(cost>user.getBalance()) return "You do not have enough money in you account";
+			stockDao.executeRaw(Owns.buy(tickerName, username, numStocks));
+			return "Bought " + numStocks + " shares for " + tickerName;
+		} catch (SQLException e) {
+			return "ERROR: There was a problem buying";
+		}
 	}
 
 	public String sell(String ticker_name, int num_stocks, String user) throws RemoteException
@@ -115,9 +127,18 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceU
 		return "SUCCESS";
 	}
 	
-	public String update(String ticker_name, float price) throws RemoteException
+	public String update(String tickerName, float price) throws RemoteException
 	{
-		return "SUCCESS";
+		try {
+			Stock stock = stockDao.queryForId(tickerName);
+			if(stock==null) return "Stock symbol " + tickerName + " not found";
+			if(price<0) return "Price is not valid";
+			stock.setPrice(price);
+			stockDao.update(stock);
+			return "Price for " + tickerName + " updated to " + price;
+		} catch (Exception e) {
+			return "Could not update price";
+		}
 	}
 
 	public String identify(String username) throws RemoteException {
