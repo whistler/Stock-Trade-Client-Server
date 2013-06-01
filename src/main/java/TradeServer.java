@@ -41,11 +41,10 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceU
 	public static void main(String[] args) throws SQLException {
 		
 		createDataAccessObjects();
-		
-		User user = new User();
-		user.setBalance(1000);
-		user.setUsername("Ibrahim");
-		userDao.createIfNotExists(user);
+
+		StockUpdater stockUpdater = new StockUpdater();
+		Thread stockUpdaterThread = new Thread(stockUpdater);
+		stockUpdaterThread.run();
 		
 		try{
 			findOrCreateRegistry();
@@ -113,7 +112,16 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceU
 		return "SUCCESS";
 	}
 
-	public String identify(String user) throws RemoteException {
-		return "SUCCESS: " + user + " logged in";
+	public String identify(String username) throws RemoteException {
+		User user = new User();
+		user.setBalance(1000);
+		user.setUsername(username);
+		try {
+			userDao.createIfNotExists(user);
+			return "SUCCESS: " + username + " logged in";
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "ERROR: Could not identify";
+		}
 	}
 }

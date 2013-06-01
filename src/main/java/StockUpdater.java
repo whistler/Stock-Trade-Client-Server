@@ -4,33 +4,59 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 /* Updates stock prices every two minutes */
 public class StockUpdater implements Runnable{
+	private static final int INITIALSHARES = 1000;
+	
 	public void run()
 	{
 		try {
-			updateStockPrices();
+			updateAllStockPrices();
 			Thread.sleep(2*60*1000);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private static void updateStockPrices() throws SQLException
+	public static void updateAllStockPrices() throws SQLException
 	{
 		String stockList = getStockList();
+		updateStockPrices(stockList);
+	}
+	
+	public static void updateStockPrices(String stockList) throws SQLException
+	{
 		String stockPriceList = downloadStocks(stockList);
 		String lines[] = stockPriceList.split("\n");
 		for(int i=0;i<lines.length;i++)
 		{
 			updateStockPrice(lines[i]);
 		}
+		System.out.println("Stock prices updated for: " + stockList);
 	}
 	
-	private static void updateStockPrice(String csvLine)
+	public static void updateStockPrice(String csvLine) throws SQLException
 	{
-		//String matches[] = csvLine.matches("\"(.*)\",(.*)");
-		System.out.println(csvLine);
+		Pattern pattern = Pattern.compile("\"(.*)\",(.*)");
+		Matcher matcher = pattern.matcher(csvLine);
+		matcher.matches();
+		String symbol = matcher.group(1);
+		Float price = Float.parseFloat(matcher.group(2));
+		Stock stock = TradeServer.stockDao.queryForId(symbol);
+		if (stock == null)
+		{
+			stock = new Stock();
+			stock.setSymbol(symbol);
+			stock.setPrice(price);
+			stock.setShares(INITIALSHARES);
+			TradeServer.stockDao.create(stock);
+		} else
+		{
+			stock.setPrice(price);
+			TradeServer.stockDao.update(stock);
+		}
 	}
 	
 	private static String getStockList() throws SQLException
@@ -52,7 +78,7 @@ public class StockUpdater implements Runnable{
 	{
 		String output = "";
 		try{
-			URL yahooFinance = new URL("http://download.finance.yahoo.com/d/quotes.csv\\?s\\=T,GOOG&f\\=sl1");
+			URL yahooFinance = new URL("http://download.finance.yahoo.com/d/quotes.csv\\?s\\="+ stockList + "&f\\=sl1");
 			URLConnection connection = yahooFinance.openConnection();
 			BufferedReader in = new BufferedReader(new InputStreamReader(
                                     connection.getInputStream()));
