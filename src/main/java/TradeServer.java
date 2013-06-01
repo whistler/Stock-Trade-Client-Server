@@ -113,7 +113,7 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceU
 		return "SUCCESS";
 	}
 
-	public String indentify(String user) throws RemoteException {
+	public String identify(String user) throws RemoteException {
 		return "SUCCESS: " + user + " logged in";
 	}
 }
