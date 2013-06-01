@@ -120,7 +120,7 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceU
 		return "SUCCESS";
 	}
 
-	public String indentify(String username) throws RemoteException {
+	public String identify(String username) throws RemoteException {
 		User user = new User();
 		user.setBalance(1000);
 		user.setUsername(username);
@@ -131,6 +131,5 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceU
 			e.printStackTrace();
 			return "ERROR: Could not identify";
 		}
-		
 	}
 }
