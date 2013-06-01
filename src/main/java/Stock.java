@@ -4,18 +4,18 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "Stocks")
 public class Stock {
 	@DatabaseField(id = true)
-	private String ticker;
+	private String symbol;
 	@DatabaseField
 	private float price;
 	@DatabaseField
 	private int shares;
 	
-	public String getTicker() {
-		return ticker;
+	public String getSymbol() {
+		return symbol;
 	}
 	
-	public void setTicker(String ticker) {
-		this.ticker = ticker;
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
 	}
 	
 	public float getPrice() {
