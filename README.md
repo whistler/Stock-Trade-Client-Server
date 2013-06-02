@@ -1,14 +1,11 @@
 Assignment #1 - Java RMI
 ========================
-Names:
+Group:
 -----
 
-1. Name:  	    Ibrahim
-   Student#:  	87625125
-2. Name:		    Jaspreet
-   Student#:	  87519920
-3. Name:		    Mohsin
-   Student#:  	87542122
+* Ibrahim  - 87625125
+* Jaspreet - 87519920
+* Mohsin   - 87542122
 
 Java Compiler:
 --------------
