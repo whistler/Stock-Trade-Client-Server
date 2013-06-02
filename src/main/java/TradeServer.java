@@ -16,6 +16,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 
+// Server to Trade stocks and fetch price updates
 public class TradeServer extends UnicastRemoteObject implements TradeApi,
 		PriceUpdateApi {
 	private static final long serialVersionUID = 1L;
@@ -26,11 +27,6 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi,
 	public static Dao<Stock, String> stockDao;
 	public static Dao<User, String> userDao;
 	public static Dao<Owns, String> ownsDao;
-
-	/**
-	 * @param args
-	 * @throws SQLException
-	 */
 
 	public TradeServer() throws RemoteException {
 		super();
@@ -52,6 +48,7 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi,
 		stockUpdaterThread.run();
 	}
 
+	//Create data access objects for stock, user and ownership
 	private static void createDataAccessObjects() throws SQLException {
 		ConnectionSource connectionSource = new JdbcConnectionSource(DATASOURCE);
 		stockDao = DaoManager.createDao(connectionSource, Stock.class);
@@ -59,6 +56,7 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi,
 		ownsDao = DaoManager.createDao(connectionSource, Owns.class);
 	}
 
+	//Find or create an RMI registry 
 	private static void findOrCreateRegistry() throws RemoteException {
 		try {
 			registry = LocateRegistry.createRegistry(PORT);
@@ -67,6 +65,7 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi,
 		}
 	}
 
+	//Bind the server to the RMI registry
 	private static void bindRegistry() throws AccessException, RemoteException,
 			AlreadyBoundException {
 		try {
@@ -80,15 +79,16 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi,
 		}
 	}
 
-	public String query(String ticker_name) throws RemoteException {
-		ticker_name = ticker_name.toUpperCase();
+	//Respond with the price of the given tickerName
+	public String query(String tickerName) throws RemoteException {
+		tickerName = tickerName.toUpperCase();
 		try {
-			Stock stock = stockDao.queryForId(ticker_name);
+			Stock stock = stockDao.queryForId(tickerName);
 			if (stock != null) {
 				return stock.print();
 			} else {
-				StockUpdater.updateStockPrices(ticker_name);
-				stock = stockDao.queryForId(ticker_name);
+				StockUpdater.updateStockPrices(tickerName);
+				stock = stockDao.queryForId(tickerName);
 				return stock.print();
 			}
 		} catch (SQLException e) {
@@ -97,6 +97,7 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi,
 		}
 	}
 
+	// Buy numStocks quantity of stocks for the tickerName for username
 	public String buy(String tickerName, int numStocks, String username)
 			throws RemoteException {
 		try {
@@ -120,6 +121,7 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi,
 		}
 	}
 
+	//Sell numStocks quantity of stocks for the tickerName for username
 	public String sell(String tickerName, int numStocks, String username)
 			throws RemoteException {
 		try {
@@ -137,6 +139,7 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi,
 		}
 	}
 
+	// Update stock price
 	public String update(String tickerName, float price) throws RemoteException {
 		try {
 			Stock stock = stockDao.queryForId(tickerName);
@@ -152,6 +155,7 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi,
 		}
 	}
 
+	// Identify username of the client and create it if it doesnt exist
 	public String identify(String username) throws RemoteException {
 		User user = new User();
 		user.setBalance(1000);

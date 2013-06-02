@@ -5,7 +5,7 @@ import java.rmi.RemoteException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-
+// Client to trade stocks
 public class TradeClient {
 
 	private static String clientname;

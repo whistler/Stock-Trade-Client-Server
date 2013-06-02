@@ -2,7 +2,7 @@
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-
+// API to trade stocks
 public interface TradeApi extends Remote {
 	public String identify(String user) throws RemoteException;
 

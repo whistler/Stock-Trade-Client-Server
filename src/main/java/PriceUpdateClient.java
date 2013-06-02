@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+// Client to update price of stock on server
 public class PriceUpdateClient {
 
 	private static final String SERVERPATH = "rmi://localhost/tradeserver";

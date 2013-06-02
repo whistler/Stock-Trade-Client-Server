@@ -3,6 +3,7 @@ import java.sql.SQLException;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+// Keeps track of which owner owns which stock
 @DatabaseTable(tableName = "Own")
 public class Owns {
 	@DatabaseField
@@ -36,6 +37,7 @@ public class Owns {
 		this.amount = amount;
 	}
 
+	// User is buying stock with given qty 
 	public static String buy(Stock stock, User user, int qty)
 			throws SQLException {
 		Owns owns = TradeServer.ownsDao.queryBuilder().where()
@@ -67,6 +69,7 @@ public class Owns {
 				+ stock.getSymbol();
 	}
 
+	//User is selling stock with given quantity
 	public static String sell(Stock stock, User user, int qty)
 			throws SQLException {
 		Owns owns = TradeServer.ownsDao.queryBuilder().where()

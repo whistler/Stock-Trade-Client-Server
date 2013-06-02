@@ -1,7 +1,7 @@
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
+// Stores data about stocks with thier price and remaining shares
 @DatabaseTable(tableName = "Stocks")
 public class Stock {
 	@DatabaseField(id = true)
