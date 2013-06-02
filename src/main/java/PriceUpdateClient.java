@@ -1,9 +1,8 @@
-package priceupdateclient;
+
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import api.PriceUpdateApi;
 
 public class PriceUpdateClient {
 

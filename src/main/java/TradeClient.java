@@ -1,10 +1,10 @@
-package tradeclient;
+
+
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import api.TradeApi;
 
 public class TradeClient {
 
