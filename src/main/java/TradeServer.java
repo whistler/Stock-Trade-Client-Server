@@ -124,9 +124,17 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceU
 		}
 	}
 
-	public String sell(String ticker_name, int num_stocks, String user) throws RemoteException
+	public String sell(String tickerName, int numStocks, String username) throws RemoteException
 	{
-		return "SUCCESS";
+		try {
+			Stock stock = stockDao.queryForId(tickerName);
+			if(stock==null) return "ERROR: " + tickerName + " does not exist in database, try to query for it first";
+			User user = userDao.queryForId(username);
+			if(user==null) return "ERROR: user " + username + " was not found";	
+			return Owns.sell(stock, user, numStocks);
+		} catch (SQLException e) {
+			return "ERROR: There was a problem buying";
+		}
 	}
 	
 	public String update(String tickerName, float price) throws RemoteException

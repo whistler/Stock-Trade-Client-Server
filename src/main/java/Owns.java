@@ -1,5 +1,4 @@
 import java.sql.SQLException;
-import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -37,21 +36,8 @@ public class Owns {
 	}
 	
 	public static String buy(Stock stock, User user, int qty) throws SQLException
-	{
-//		return  "UPDATE Stocks SET shares=shares-" + qty + " WHERE symbol='" + symbol + "';\n" +
-//				"UPDATE Users SET balance=balance-"+ qty*price + " WHERE username='" + user + "';\n" +
-//				"INSERT INTO Own (username,symbol,amount) values ('" + user +"','" + symbol + "', " +
-//						"(SELECT amount FROM Own WHERE username='" + user + "' AND symbol='" + symbol + "'));\n" +
-//				"UPDATE Own SET amount=0 WHERE amount IS NULL;\n" +
-//				"UPDATE Own SET amount = amount + " + qty + " WHERE username = '" + user + "' AND symbol = '" + symbol + "';\n";
-//		return  "UPDATE Stocks SET shares=shares-" + qty + " WHERE symbol='" + symbol + "';\n" +
-//		"UPDATE Users SET balance=balance-"+ qty*price + " WHERE username='" + user + "';\n" +
-//		"INSERT INTO Own (username,symbol,amount) values ('" + user +"','" + symbol + "', 0) ON DUPLICATE KEY UPDATE amount = amount + " + qty +"\n"";
-		Dao<Stock, String> stockDao = TradeServer.stockDao;
-		Dao<User, String> userDao = TradeServer.userDao;
-		Dao<Owns, String> ownsDao = TradeServer.ownsDao;
-		
-		Owns owns = ownsDao.queryBuilder().where().eq("username", user.getUsername()).and().eq("symbol", stock.getSymbol()).queryForFirst();
+	{		
+		Owns owns = TradeServer.ownsDao.queryBuilder().where().eq("username", user.getUsername()).and().eq("symbol", stock.getSymbol()).queryForFirst();
 		boolean createOwns = false;
 		if(owns == null)
 		{
@@ -66,17 +52,27 @@ public class Owns {
 		stock.setShares(stock.getShares()-qty);
 		user.setBalance(user.getBalance()-(qty*stock.getPrice()));
 		
-		stockDao.update(stock);
-		userDao.update(user);
-		if(createOwns) ownsDao.create(owns);
-		else ownsDao.updateRaw("UPDATE Own SET amount=" + owns.getAmount() + " WHERE username='" + user.getUsername() + "' AND symbol='" + stock.getSymbol() + "';");
+		TradeServer.stockDao.update(stock);
+		TradeServer.userDao.update(user);
+		if(createOwns) TradeServer.ownsDao.create(owns);
+		else TradeServer.ownsDao.updateRaw("UPDATE Own SET amount=" + owns.getAmount() + " WHERE username='" + user.getUsername() + "' AND symbol='" + stock.getSymbol() + "';");
 		return "You now own " + owns.getAmount() + " shares of " + stock.getSymbol();
 	}
 	
-	public static String sell(String symbol, String user, int qty)
+	public static String sell(Stock stock, User user, int qty) throws SQLException
 	{
-		return "BEGIN TRANSACTION;" +
-				"update Own set amount=amount-qty where username=user AND symbol=symbol " +
-				"COMMIT;";
+		Owns owns = TradeServer.ownsDao.queryBuilder().where().eq("username", user.getUsername()).and().eq("symbol", stock.getSymbol()).queryForFirst();
+		if (owns==null) return "You do not own " + stock.getSymbol() + " stock";
+		if (owns.getAmount() < qty) return "You can not sell more than you own. You own " + owns.getAmount() + " shares of " + stock.getSymbol();
+		
+		stock.setShares(stock.getShares()+qty);
+		user.setBalance(user.getBalance()+(qty*stock.getPrice()));
+		owns.setAmount(owns.getAmount()-qty);
+		
+		TradeServer.stockDao.update(stock);
+		TradeServer.userDao.update(user);
+		TradeServer.ownsDao.updateRaw("UPDATE Own SET amount=" + owns.getAmount() + " WHERE username='" + user.getUsername() + "' AND symbol='" + stock.getSymbol() + "';");
+		
+		return "You now own " + owns.getAmount() + " shares of " + stock.getSymbol();
 	}
 }
