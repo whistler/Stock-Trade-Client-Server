@@ -59,7 +59,7 @@ public class TradeClient {
 
 				default:
 					System.out
-					.println("\nCommand was not recognized, please try again\n");
+							.println("\nCommand was not recognized, please try again\n");
 				}
 			}
 
@@ -118,14 +118,14 @@ public class TradeClient {
 	private static void printOptions() {
 		System.out.println();
 		System.out
-		.println("----------------------------------------------------------------");
+				.println("----------------------------------------------------------------");
 		System.out.println("| Available options: ");
 		System.out.println("|\t query ");
 		System.out.println("|\t buy ");
 		System.out.println("|\t sell ");
 		System.out.println("|\t quit ");
 		System.out
-		.println("----------------------------------------------------------------");
+				.println("----------------------------------------------------------------");
 	}
 
 	private static void getUsernameEntry() {

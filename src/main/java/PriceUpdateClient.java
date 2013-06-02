@@ -52,7 +52,7 @@ public class PriceUpdateClient {
 				break;
 			}
 		}
-		
+
 		System.out.println("Logged out");
 		usc.close();
 		System.exit(0);
