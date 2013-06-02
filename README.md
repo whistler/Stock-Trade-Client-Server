@@ -3,12 +3,12 @@ Assignment #1 - Java RMI
 Names:
 -----
 
-Name:  	    Ibrahim
-Student#:  	87625125
-Name:		    Jaspreet
-Student#:	  87519920
-Name:		    Mohsin
-Student#:  	87542122
+1. Name:  	    Ibrahim
+   Student#:  	87625125
+2. Name:		    Jaspreet
+   Student#:	  87519920
+3. Name:		    Mohsin
+   Student#:  	87542122
 
 Java Compiler:
 --------------
