@@ -2,6 +2,7 @@ package api;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 
 public interface TradeApi extends Remote {
 	public String identify(String user) throws RemoteException;

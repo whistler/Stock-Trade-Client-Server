@@ -28,6 +28,8 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceU
 	private static Registry registry;
 	public static Dao<Stock, String> stockDao;
 	public static Dao<User, String> userDao;
+	public static Dao<Owns, String> ownsDao;
+	
 
 	/**
 	 * @param args
@@ -60,6 +62,7 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceU
 				new JdbcConnectionSource(DATASOURCE);
 		  stockDao = DaoManager.createDao(connectionSource, Stock.class);
 		  userDao = DaoManager.createDao(connectionSource, User.class);
+		  ownsDao = DaoManager.createDao(connectionSource, Owns.class);
 	}
 	
 	private static void findOrCreateRegistry() throws RemoteException
@@ -112,11 +115,10 @@ public class TradeServer extends UnicastRemoteObject implements TradeApi, PriceU
 			if(stock==null) return "ERROR: " + tickerName + " does not exist in database, try to query for it first";
 			User user = userDao.queryForId(username);
 			if(user==null) return "ERROR: user " + username + " was not found";
-			if(numStocks>=stock.getShares()) return "The maximum shares available for buying are " + stock.getShares();
+			if(numStocks>stock.getShares()) return "The maximum shares available for buying are " + stock.getShares();
 			float cost = numStocks * stock.getPrice();
 			if(cost>user.getBalance()) return "You do not have enough money in you account";
-			stockDao.executeRaw(Owns.buy(tickerName, username, numStocks));
-			return "Bought " + numStocks + " shares for " + tickerName;
+			return Owns.buy(stock, user, numStocks);
 		} catch (SQLException e) {
 			return "ERROR: There was a problem buying";
 		}
