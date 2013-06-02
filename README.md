@@ -18,6 +18,7 @@ IDE: EE IDE Eclipse Java Juno
 Description:
 ------------
 Assignment contains seven code files
+
 1.	Owns.Java
 2.	PriceUpdateClient.Java
 3.	Stock.java
